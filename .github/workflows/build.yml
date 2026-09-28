@@ -3,6 +3,10 @@
 #       手动 workflow_dispatch → 只构建，产物在 Artifacts 里下载
 name: build
 
+# 新仓库 GITHUB_TOKEN 默认 Contents: read；发 Release 需要写权限
+permissions:
+  contents: write
+
 on:
   workflow_dispatch:
   push:
