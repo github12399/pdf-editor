@@ -1,0 +1,63 @@
+appId: com.zcode.pdf-editor
+productName: PDF文字编辑器
+copyright: PDF 文字编辑器
+
+directories:
+  output: release
+  buildResources: build
+
+# 复用本地已解压的 electron 发行版：绕开下载 zip 的解压+rename 环节
+# （该环节在杀软实时扫描下常报 EPERM）
+# 注意：此配置仅用于 Windows 本地打包，通过 package.json 的 app:build 脚本
+# 以 -c.electronDist=... 传入；mac/linux 及 CI 走默认下载（支持多架构）。
+
+# 只打包运行所需内容；node_modules 由 builder 按 dependencies 自动裁剪 devDependencies
+files:
+  - dist/**/*
+  - electron/**/*
+  - package.json
+
+asar: true
+compression: maximum
+
+win:
+  # portable：单文件免安装，拷走即用；nsis：常规安装包
+  target:
+    - target: portable
+      arch: [x64]
+    - target: nsis
+      arch: [x64]
+
+nsis:
+  oneClick: true
+  perMachine: false
+  deleteAppDataOnUninstall: true
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
+  artifactName: ${productName}-Setup-${version}.exe
+
+portable:
+  artifactName: ${productName}-Portable-${version}.exe
+
+# macOS：未签名分发（无 Apple 开发者账号），首次打开需右键 → 打开
+# dmg 带 arch 后缀，区分 Apple 芯片（arm64）/ Intel 芯片（x64）
+mac:
+  target:
+    - target: dmg
+      arch: [arm64]
+    - target: dmg
+      arch: [x64]
+  category: public.app-category.productivity
+  artifactName: ${productName}-mac-${arch}-${version}.dmg
+  identity: null
+
+# Linux：AppImage 免安装（chmod +x 直接跑），deb 给 Ubuntu/Debian 用户
+linux:
+  target:
+    - target: AppImage
+      arch: [x64]
+    - target: deb
+      arch: [x64]
+  category: Office
+  artifactName: ${productName}-linux-${version}.${ext}
+  maintainer: zcode

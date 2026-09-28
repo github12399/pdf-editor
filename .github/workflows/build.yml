@@ -1,0 +1,81 @@
+# PDF 文字编辑器三平台自动构建
+# 触发：推送 v 开头 tag（如 v1.0.1）→ 构建三平台安装包并发布 GitHub Release
+#       手动 workflow_dispatch → 只构建，产物在 Artifacts 里下载
+name: build
+
+on:
+  workflow_dispatch:
+  push:
+    tags: ['v*']
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest   # Windows x64：portable + nsis
+          - os: macos-latest     # Apple 芯片 (arm64) dmg
+            mac_arch: arm64
+          - os: macos-13         # Intel 芯片 (x64) dmg
+            mac_arch: x64
+          - os: ubuntu-latest    # Linux x64：AppImage + deb
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      # macos-13 / macos-latest 各自安装对应架构的 electron 二进制
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build frontend
+        run: pnpm build
+
+      # macOS：单架构运行；未签名分发，跳过证书发现
+      - name: Package (macOS)
+        if: runner.os == 'macOS'
+        run: npx electron-builder --mac --${{ matrix.mac_arch }}
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+
+      - name: Package (Windows)
+        if: runner.os == 'Windows'
+        run: npx electron-builder --win
+
+      - name: Package (Linux)
+        if: runner.os == 'Linux'
+        run: npx electron-builder --linux
+
+      # tag 推送 → 发布 Release；手动触发 → 只上传 Artifacts
+      - name: Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            release/*.exe
+            release/*.dmg
+            release/*.AppImage
+            release/*.deb
+          draft: true
+          generate_release_notes: true
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: pdf-editor-${{ matrix.os }}-${{ matrix.mac_arch || 'x64' }}
+          path: |
+            release/*.exe
+            release/*.dmg
+            release/*.AppImage
+            release/*.deb
+          if-no-files-found: warn

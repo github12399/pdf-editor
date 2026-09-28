@@ -1,0 +1,266 @@
+:root {
+  --toolbar-bg: #23272e;
+  --toolbar-fg: #d6dae1;
+  --toolbar-fg-dim: #8b93a1;
+  --accent: #3b82f6;
+  --accent-hover: #2563eb;
+  --canvas-bg: #4a4f57;
+  --page-shadow: 0 2px 10px rgba(0, 0, 0, 0.45);
+  --err-bg: #b91c1c;
+  --sans: system-ui, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif;
+  --mono: ui-monospace, Consolas, monospace;
+
+  font: 14px/1.5 var(--sans);
+  color-scheme: light;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#app {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  overflow: hidden;
+}
+
+.app {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: var(--canvas-bg);
+}
+
+/* 主区域：画布 + 右侧编辑记录侧栏 */
+.main {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+}
+
+/* ---------- 顶部工具栏 ---------- */
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 14px;
+  background: var(--toolbar-bg);
+  color: var(--toolbar-fg);
+  flex: none;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+  z-index: 10;
+}
+
+.btn {
+  font: inherit;
+  color: var(--toolbar-fg);
+  background: #31363f;
+  border: 1px solid #3d434e;
+  border-radius: 6px;
+  padding: 5px 12px;
+  cursor: pointer;
+  line-height: 1.4;
+  white-space: nowrap;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.btn:hover:not(:disabled) {
+  background: #3b414c;
+  border-color: #4c5461;
+}
+
+.btn:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.btn.primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+  font-weight: 600;
+}
+
+.btn.primary:hover:not(:disabled) {
+  background: var(--accent-hover);
+}
+
+.btn.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+.btn.mini {
+  padding: 1px 6px;
+  font-size: 12px;
+  border-radius: 5px;
+}
+
+.fname {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--toolbar-fg-dim);
+  font-size: 13px;
+}
+
+.group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.pageno {
+  width: 56px;
+  font: inherit;
+  text-align: center;
+  color: var(--toolbar-fg);
+  background: #1b1e23;
+  border: 1px solid #3d434e;
+  border-radius: 6px;
+  padding: 4px 2px;
+}
+
+.pageno::-webkit-inner-spin-button,
+.pageno::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.total,
+.zoom-label {
+  color: var(--toolbar-fg-dim);
+  min-width: 36px;
+  text-align: center;
+}
+
+/* ---------- 画布视口 ---------- */
+
+.viewport {
+  flex: 1;
+  overflow: auto;
+  position: relative;
+  /* 跟随系统滚动条不影响整体 */
+  scrollbar-width: thin;
+  scrollbar-color: #565d68 transparent;
+}
+
+.pages {
+  padding: 24px 0 48px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.page-wrap {
+  position: relative;
+  box-shadow: var(--page-shadow);
+  background: #fff;
+  scroll-margin-top: 4px;
+}
+
+.page-wrap canvas {
+  display: block;
+}
+
+/* ---------- 空态 ---------- */
+
+.empty {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #e8eaee;
+}
+
+.empty-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  font-size: 16px;
+  opacity: 0.95;
+}
+
+.empty-icon {
+  font-size: 56px;
+}
+
+.empty-box:hover {
+  opacity: 1;
+}
+
+.empty-msg {
+  font-size: 16px;
+  color: #d3d8df;
+}
+
+/* ---------- 错误提示 ---------- */
+
+.error-bar {
+  position: fixed;
+  left: 50%;
+  top: 64px;
+  transform: translateX(-50%);
+  background: var(--err-bg);
+  color: #fff;
+  padding: 10px 16px;
+  border-radius: 8px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  max-width: 70vw;
+  z-index: 100;
+}
+
+/* ---------- 扫描件提示 ---------- */
+
+.scan-hint {
+  position: fixed;
+  left: 50%;
+  top: 64px;
+  transform: translateX(-50%);
+  background: #78350f;
+  color: #fde68a;
+  padding: 10px 16px;
+  border-radius: 8px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  max-width: 70vw;
+  z-index: 100;
+  font-size: 14px;
+}
+
+.error-close {
+  background: none;
+  border: none;
+  color: inherit;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 2px 6px;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.2s;
+}
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
