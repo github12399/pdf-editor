@@ -34,8 +34,8 @@ pnpm app:build:mac     # macOS：dmg（需在 macOS/CI 上跑）
 
 | 文件 | 说明 |
 |---|---|
-| `PDF文字编辑器-Portable-1.0.0.exe` | 便携版：单文件免安装，拷到其他电脑（Windows 10/11 x64）双击即用 |
-| `PDF文字编辑器-Setup-1.0.0.exe` | 安装包：双击安装（带桌面/开始菜单快捷方式），带卸载器 |
+| `PDF-Editor-Portable-1.0.0.exe` | 便携版：单文件免安装，拷到其他电脑（Windows 10/11 x64）双击即用 |
+| `PDF-Editor-Setup-1.0.0.exe` | 安装包：双击安装（带桌面/开始菜单快捷方式），带卸载器 |
 
 迁移到其他电脑：直接拷贝便携版 exe 即可，无需安装任何运行时。首次运行可能弹出 SmartScreen 提示（未签名应用），点「更多信息 → 仍要运行」。
 
@@ -56,11 +56,11 @@ git tag v1.0.0 && git push origin v1.0.0
 
 | 平台 | 文件 | 说明 |
 |---|---|---|
-| Windows x64 | `PDF文字编辑器-Setup/Portable-*.exe` | 安装包 / 便携版 |
-| macOS arm64 | `PDF文字编辑器-mac-arm64-*.dmg` | Apple 芯片（M1 及以后） |
-| macOS x64 | `PDF文字编辑器-mac-x64-*.dmg` | Intel 芯片 |
-| Linux x64 | `PDF文字编辑器-linux-*.AppImage` | 免安装，`chmod +x` 后直接运行 |
-| Linux x64 | `PDF文字编辑器-linux-*.deb` | Ubuntu/Debian 安装包 |
+| Windows x64 | `PDF-Editor-Setup/Portable-*.exe` | 安装包 / 便携版 |
+| macOS arm64 | `PDF-Editor-mac-arm64-*.dmg` | Apple 芯片（M1 及以后） |
+| macOS x64 | `PDF-Editor-mac-x64-*.dmg` | Intel 芯片 |
+| Linux x64 | `PDF-Editor-linux-*.AppImage` | 免安装，`chmod +x` 后直接运行 |
+| Linux x64 | `PDF-Editor-linux-*.deb` | Ubuntu/Debian 安装包 |
 
 macOS 包未签名（无 Apple 开发者账号 $99/年）：首次打开需**右键 → 打开**（直接双击会被
 Gatekeeper 拦截），之后正常使用。

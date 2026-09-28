@@ -26,6 +26,7 @@ publish: null
 
 win:
   # portable：单文件免安装，拷走即用；nsis：常规安装包
+  # 产物名用英文：GitHub Release 资产名会剥掉中文（PDF文字编辑器 → PDF.）
   target:
     - target: portable
       arch: [x64]
@@ -38,21 +39,19 @@ nsis:
   deleteAppDataOnUninstall: true
   createDesktopShortcut: true
   createStartMenuShortcut: true
-  artifactName: ${productName}-Setup-${version}.exe
+  artifactName: PDF-Editor-Setup-${version}.exe
 
 portable:
-  artifactName: ${productName}-Portable-${version}.exe
+  artifactName: PDF-Editor-Portable-${version}.exe
 
 # macOS：未签名分发（无 Apple 开发者账号），首次打开需右键 → 打开
-# dmg 带 arch 后缀，区分 Apple 芯片（arm64）/ Intel 芯片（x64）
+# 一个 mac 构建机即可交叉产出两种芯片的 dmg（arm64 = Apple 芯片，x64 = Intel 芯片）
 mac:
   target:
     - target: dmg
-      arch: [arm64]
-    - target: dmg
-      arch: [x64]
+      arch: [arm64, x64]
   category: public.app-category.productivity
-  artifactName: ${productName}-mac-${arch}-${version}.dmg
+  artifactName: PDF-Editor-mac-${arch}-${version}.dmg
   identity: null
 
 # Linux：AppImage 免安装（chmod +x 直接跑），deb 给 Ubuntu/Debian 用户
@@ -63,7 +62,7 @@ linux:
     - target: deb
       arch: [x64]
   category: Office
-  artifactName: ${productName}-linux-${version}.${ext}
+  artifactName: PDF-Editor-linux-${version}.${ext}
   maintainer: zcode
   # 窗口与 .desktop 关联（WM_CLASS），需与 package.json 的 desktopName 一并设置
   syncDesktopName: true
