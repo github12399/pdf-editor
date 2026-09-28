@@ -20,6 +20,10 @@ files:
 asar: true
 compression: maximum
 
+# 发布由 GitHub Actions 的独立步骤完成（softprops/action-gh-release），
+# 不用 electron-builder 内置发布：显式关闭，否则它会因缺 GH_TOKEN 报错
+publish: null
+
 win:
   # portable：单文件免安装，拷走即用；nsis：常规安装包
   target:
@@ -61,3 +65,5 @@ linux:
   category: Office
   artifactName: ${productName}-linux-${version}.${ext}
   maintainer: zcode
+  # 窗口与 .desktop 关联（WM_CLASS），需与 package.json 的 desktopName 一并设置
+  syncDesktopName: true

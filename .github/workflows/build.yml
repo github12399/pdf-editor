@@ -44,17 +44,17 @@ jobs:
       # macOS：单架构运行；未签名分发，跳过证书发现
       - name: Package (macOS)
         if: runner.os == 'macOS'
-        run: npx electron-builder --mac --${{ matrix.mac_arch }}
+        run: npx electron-builder --mac --${{ matrix.mac_arch }} --publish never
         env:
           CSC_IDENTITY_AUTO_DISCOVERY: 'false'
 
       - name: Package (Windows)
         if: runner.os == 'Windows'
-        run: npx electron-builder --win
+        run: npx electron-builder --win --publish never
 
       - name: Package (Linux)
         if: runner.os == 'Linux'
-        run: npx electron-builder --linux
+        run: npx electron-builder --linux --publish never
 
       # tag 推送 → 发布 Release；手动触发 → 只上传 Artifacts
       - name: Release
